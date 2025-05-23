@@ -1,6 +1,5 @@
 
 import { Link } from 'react-router-dom';
-import { BookOpenText } from "lucide-react";
 import SuiConnector from './SuiConnector';
 
 const Navbar = () => {
@@ -10,7 +9,11 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <BookOpenText className="h-8 w-8 text-pink-500" />
+              <img 
+                src="/lovable-uploads/a862e2f2-ee81-44c6-9310-30e9a38e13d5.png" 
+                alt="FlashSui Logo" 
+                className="h-8 w-8" 
+              />
               <span className="ml-2 text-xl font-bold text-white">FlashSui</span>
             </Link>
           </div>
