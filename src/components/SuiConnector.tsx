@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { useWallets } from '@mysten/dapp-kit';
 
 interface SuiConnectorProps {
   onConnect?: (address: string) => void;
@@ -11,41 +10,52 @@ interface SuiConnectorProps {
 }
 
 const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConnectorProps) => {
+  const [address, setAddress] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
-  const walletsState = useWallets();
-  
-  // Extract relevant properties from the wallet state
-  const currentWallet = walletsState.currentWallet;
-  const wallets = walletsState.wallets;
-  
-  // Determine if we're connected and get current account
-  const currentAccount = currentWallet?.accounts?.[0];
-  const isConnected = !!currentAccount;
 
   useEffect(() => {
-    // Report wallet status to parent components when connection status changes
-    if (isConnected && currentAccount) {
+    // Check for stored wallet connection
+    const storedAddress = localStorage.getItem('suiWalletAddress');
+    if (storedAddress) {
+      setAddress(storedAddress);
       if (onConnect) {
-        onConnect(currentAccount.address);
+        onConnect(storedAddress);
       }
       if (onWalletStatusChange) {
-        onWalletStatusChange(currentAccount.address);
+        onWalletStatusChange(storedAddress);
       }
     } else if (onWalletStatusChange) {
       onWalletStatusChange(null);
     }
-  }, [isConnected, currentAccount, onConnect, onWalletStatusChange]);
+  }, [onConnect, onWalletStatusChange]);
 
   const connectWallet = async () => {
     setIsConnecting(true);
     
     try {
-      // Use the first available wallet adapter
-      if (wallets.length > 0) {
-        await wallets[0].connect();
-        toast.success('Wallet connected successfully!');
-      } else {
-        toast.error('No wallet adapters available');
+      // In a real app, we'd integrate with the Sui wallet
+      // This is a placeholder that simulates a connection
+      console.log('Connecting to Sui wallet...');
+      
+      // Simulate wallet connection delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock successful connection
+      const mockAddress = '0x' + Array.from({length: 40}, () => 
+        Math.floor(Math.random() * 16).toString(16)
+      ).join('');
+      
+      setAddress(mockAddress);
+      localStorage.setItem('suiWalletAddress', mockAddress);
+      
+      toast.success('Wallet connected successfully!');
+      
+      if (onConnect) {
+        onConnect(mockAddress);
+      }
+      
+      if (onWalletStatusChange) {
+        onWalletStatusChange(mockAddress);
       }
     } catch (error) {
       console.error('Failed to connect wallet:', error);
@@ -55,31 +65,26 @@ const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConn
     }
   };
 
-  const disconnectWallet = async () => {
-    if (currentWallet) {
-      try {
-        await currentWallet.disconnect();
-        toast.info('Wallet disconnected');
-        
-        if (onDisconnect) {
-          onDisconnect();
-        }
-        
-        if (onWalletStatusChange) {
-          onWalletStatusChange(null);
-        }
-      } catch (error) {
-        console.error('Failed to disconnect wallet:', error);
-        toast.error('Failed to disconnect wallet. Please try again.');
-      }
+  const disconnectWallet = () => {
+    setAddress(null);
+    localStorage.removeItem('suiWalletAddress');
+    
+    if (onDisconnect) {
+      onDisconnect();
     }
+    
+    if (onWalletStatusChange) {
+      onWalletStatusChange(null);
+    }
+    
+    toast.info('Wallet disconnected');
   };
 
-  if (isConnected && currentAccount) {
+  if (address) {
     return (
       <div className="flex items-center space-x-2">
         <div className="text-sm font-medium truncate max-w-[150px] text-white">
-          {currentAccount.address.substring(0, 6)}...{currentAccount.address.substring(currentAccount.address.length - 4)}
+          {address.substring(0, 6)}...{address.substring(address.length - 4)}
         </div>
         <Button variant="outline" size="sm" onClick={disconnectWallet} 
           className="border-pink-500 text-pink-500 hover:bg-pink-500/20 hover:text-pink-300">

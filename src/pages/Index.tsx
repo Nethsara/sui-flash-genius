@@ -1,25 +1,23 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import DeckList from '../components/DeckList';
 import { Button } from '@/components/ui/button';
 import { Deck } from '@/lib/types';
 import { BookOpenText } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
 
 const Index = () => {
   const [walletConnected, setWalletConnected] = useState(false);
+  const [decks, setDecks] = useState<Deck[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Simulating data fetch with React Query
-  const { data: decks = [], isLoading } = useQuery({
-    queryKey: ['decks', walletConnected],
-    queryFn: async () => {
+  // Simulating data fetch
+  useEffect(() => {
+    const fetchDecks = async () => {
       // In a real app, we'd fetch from Sui blockchain
       // For now, using mock data
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      if (!walletConnected) return [];
       
       const mockDecks: Deck[] = [
         {
@@ -40,19 +38,20 @@ const Index = () => {
         }
       ];
       
-      return mockDecks;
-    },
-    enabled: true,
-  });
+      setDecks(mockDecks);
+      setIsLoading(false);
+    };
+    
+    fetchDecks();
+  }, []);
 
   const handleWalletStatusChange = (address: string | null) => {
-    console.log("Wallet status changed:", address);
     setWalletConnected(!!address);
   };
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar onWalletStatusChange={handleWalletStatusChange} />
+      <Navbar />
       
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-10">
