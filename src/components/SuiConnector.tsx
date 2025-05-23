@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { useWalletKit } from '@mysten/dapp-kit';
+import { useWallets } from '@mysten/dapp-kit';
 
 interface SuiConnectorProps {
   onConnect?: (address: string) => void;
@@ -12,7 +12,10 @@ interface SuiConnectorProps {
 
 const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConnectorProps) => {
   const [isConnecting, setIsConnecting] = useState(false);
-  const { isConnected, currentAccount, connect, disconnect } = useWalletKit();
+  const { wallets, currentWallet } = useWallets();
+  
+  const isConnected = !!currentWallet?.accounts[0];
+  const currentAccount = currentWallet?.accounts[0];
 
   useEffect(() => {
     // Report wallet status to parent components when connection status changes
@@ -32,8 +35,13 @@ const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConn
     setIsConnecting(true);
     
     try {
-      await connect();
-      toast.success('Wallet connected successfully!');
+      // Use the first available wallet adapter
+      if (wallets.length > 0) {
+        await wallets[0].connect();
+        toast.success('Wallet connected successfully!');
+      } else {
+        toast.error('No wallet adapters available');
+      }
     } catch (error) {
       console.error('Failed to connect wallet:', error);
       toast.error('Failed to connect wallet. Please try again.');
@@ -42,18 +50,24 @@ const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConn
     }
   };
 
-  const disconnectWallet = () => {
-    disconnect();
-    
-    if (onDisconnect) {
-      onDisconnect();
+  const disconnectWallet = async () => {
+    if (currentWallet) {
+      try {
+        await currentWallet.disconnect();
+        toast.info('Wallet disconnected');
+        
+        if (onDisconnect) {
+          onDisconnect();
+        }
+        
+        if (onWalletStatusChange) {
+          onWalletStatusChange(null);
+        }
+      } catch (error) {
+        console.error('Failed to disconnect wallet:', error);
+        toast.error('Failed to disconnect wallet. Please try again.');
+      }
     }
-    
-    if (onWalletStatusChange) {
-      onWalletStatusChange(null);
-    }
-    
-    toast.info('Wallet disconnected');
   };
 
   if (isConnected && currentAccount) {

@@ -8,13 +8,13 @@ import Index from "./pages/Index";
 import CreateDeck from "./pages/CreateDeck";
 import StudyDeck from "./pages/StudyDeck";
 import NotFound from "./pages/NotFound";
-import { WalletKitProvider } from "@mysten/dapp-kit";
+import { WalletProvider } from "@mysten/dapp-kit";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <WalletKitProvider>
+    <WalletProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -27,7 +27,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
-    </WalletKitProvider>
+    </WalletProvider>
   </QueryClientProvider>
 );
 
