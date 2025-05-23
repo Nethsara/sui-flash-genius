@@ -10,16 +10,16 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <img 
-                src="/lovable-uploads/a862e2f2-ee81-44c6-9310-30e9a38e13d5.png" 
+                src="/lovable-uploads/d6807d4f-7852-4fa1-b05d-dbffa327fdff.png" 
                 alt="FlashSui Logo" 
-                className="h-8 w-8" 
+                className="h-10 w-10" 
               />
               <span className="ml-2 text-xl font-bold text-white">FlashSui</span>
             </Link>
           </div>
           
           <div>
-            <SuiConnector />
+            <SuiConnector onWalletStatusChange={(address) => {}} />
           </div>
         </div>
       </div>
