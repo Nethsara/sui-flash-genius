@@ -3,11 +3,6 @@ import { Link } from 'react-router-dom';
 import SuiConnector from './SuiConnector';
 
 const Navbar = () => {
-  const handleWalletStatusChange = (address: string | null) => {
-    // You can add any additional logic here when wallet status changes
-    console.log('Wallet status changed:', address);
-  };
-
   return (
     <nav className="bg-black border-b border-zinc-800 sticky top-0 z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,7 +19,7 @@ const Navbar = () => {
           </div>
           
           <div>
-            <SuiConnector onWalletStatusChange={handleWalletStatusChange} />
+            <SuiConnector onWalletStatusChange={(address) => {}} />
           </div>
         </div>
       </div>
