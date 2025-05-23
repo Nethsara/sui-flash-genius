@@ -16,7 +16,7 @@ const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConn
   
   useEffect(() => {
     // Get the current wallet if available
-    const currentWallet = wallets.find(wallet => wallet.connected);
+    const currentWallet = wallets.find(wallet => wallet.status === "connected");
     
     if (currentWallet) {
       const walletAddress = currentWallet.accounts[0]?.address || null;
@@ -37,10 +37,14 @@ const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConn
 
   const disconnectWallet = () => {
     // Find the connected wallet
-    const currentWallet = wallets.find(wallet => wallet.connected);
+    const currentWallet = wallets.find(wallet => wallet.status === "connected");
     
     if (currentWallet) {
-      currentWallet.disconnect();
+      try {
+        currentWallet.disconnect?.();
+      } catch (error) {
+        console.error("Error disconnecting wallet:", error);
+      }
     }
     
     setAddress(null);
