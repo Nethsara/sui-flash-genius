@@ -1,16 +1,8 @@
 
 import { Link } from 'react-router-dom';
 import SuiConnector from './SuiConnector';
-import { useState } from 'react';
 
 const Navbar = () => {
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
-
-  const handleWalletStatusChange = (address: string | null) => {
-    setWalletAddress(address);
-    console.log('Wallet status changed:', address);
-  };
-
   return (
     <nav className="bg-black border-b border-zinc-800 sticky top-0 z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -27,7 +19,7 @@ const Navbar = () => {
           </div>
           
           <div>
-            <SuiConnector onWalletStatusChange={handleWalletStatusChange} />
+            <SuiConnector onWalletStatusChange={(address) => {}} />
           </div>
         </div>
       </div>
