@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { useWallet } from '@suiet/wallet-kit';
 
 interface SuiConnectorProps {
   onConnect?: (address: string) => void;
@@ -10,53 +11,28 @@ interface SuiConnectorProps {
 }
 
 const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConnectorProps) => {
-  const [address, setAddress] = useState<string | null>(null);
+  const wallet = useWallet();
   const [isConnecting, setIsConnecting] = useState(false);
 
   useEffect(() => {
-    // Check for stored wallet connection
-    const storedAddress = localStorage.getItem('suiWalletAddress');
-    if (storedAddress) {
-      setAddress(storedAddress);
-      if (onConnect) {
-        onConnect(storedAddress);
-      }
-      if (onWalletStatusChange) {
-        onWalletStatusChange(storedAddress);
-      }
-    } else if (onWalletStatusChange) {
-      onWalletStatusChange(null);
+    // Notify about connection status changes
+    if (wallet.address && onConnect) {
+      onConnect(wallet.address);
     }
-  }, [onConnect, onWalletStatusChange]);
+    
+    if (onWalletStatusChange) {
+      onWalletStatusChange(wallet.address || null);
+    }
+  }, [wallet.address, onConnect, onWalletStatusChange]);
 
-  const connectWallet = async () => {
+  const handleConnect = async () => {
     setIsConnecting(true);
     
     try {
-      // In a real app, we'd integrate with the Sui wallet
-      // This is a placeholder that simulates a connection
-      console.log('Connecting to Sui wallet...');
-      
-      // Simulate wallet connection delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock successful connection
-      const mockAddress = '0x' + Array.from({length: 40}, () => 
-        Math.floor(Math.random() * 16).toString(16)
-      ).join('');
-      
-      setAddress(mockAddress);
-      localStorage.setItem('suiWalletAddress', mockAddress);
+      await wallet.select();
+      await wallet.connect();
       
       toast.success('Wallet connected successfully!');
-      
-      if (onConnect) {
-        onConnect(mockAddress);
-      }
-      
-      if (onWalletStatusChange) {
-        onWalletStatusChange(mockAddress);
-      }
     } catch (error) {
       console.error('Failed to connect wallet:', error);
       toast.error('Failed to connect wallet. Please try again.');
@@ -65,9 +41,8 @@ const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConn
     }
   };
 
-  const disconnectWallet = () => {
-    setAddress(null);
-    localStorage.removeItem('suiWalletAddress');
+  const handleDisconnect = () => {
+    wallet.disconnect();
     
     if (onDisconnect) {
       onDisconnect();
@@ -80,13 +55,13 @@ const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConn
     toast.info('Wallet disconnected');
   };
 
-  if (address) {
+  if (wallet.connected) {
     return (
       <div className="flex items-center space-x-2">
         <div className="text-sm font-medium truncate max-w-[150px] text-white">
-          {address.substring(0, 6)}...{address.substring(address.length - 4)}
+          {wallet.address && `${wallet.address.substring(0, 6)}...${wallet.address.substring(wallet.address.length - 4)}`}
         </div>
-        <Button variant="outline" size="sm" onClick={disconnectWallet} 
+        <Button variant="outline" size="sm" onClick={handleDisconnect} 
           className="border-pink-500 text-pink-500 hover:bg-pink-500/20 hover:text-pink-300">
           Disconnect
         </Button>
@@ -96,7 +71,7 @@ const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConn
 
   return (
     <Button 
-      onClick={connectWallet} 
+      onClick={handleConnect} 
       disabled={isConnecting}
       className="bg-pink-500 hover:bg-pink-600 text-white rounded-full px-6"
     >
