@@ -6,9 +6,10 @@ import { toast } from 'sonner';
 interface SuiConnectorProps {
   onConnect?: (address: string) => void;
   onDisconnect?: () => void;
+  onWalletStatusChange?: (address: string | null) => void;
 }
 
-const SuiConnector = ({ onConnect, onDisconnect }: SuiConnectorProps) => {
+const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConnectorProps) => {
   const [address, setAddress] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
 
@@ -20,8 +21,13 @@ const SuiConnector = ({ onConnect, onDisconnect }: SuiConnectorProps) => {
       if (onConnect) {
         onConnect(storedAddress);
       }
+      if (onWalletStatusChange) {
+        onWalletStatusChange(storedAddress);
+      }
+    } else if (onWalletStatusChange) {
+      onWalletStatusChange(null);
     }
-  }, [onConnect]);
+  }, [onConnect, onWalletStatusChange]);
 
   const connectWallet = async () => {
     setIsConnecting(true);
@@ -47,6 +53,10 @@ const SuiConnector = ({ onConnect, onDisconnect }: SuiConnectorProps) => {
       if (onConnect) {
         onConnect(mockAddress);
       }
+      
+      if (onWalletStatusChange) {
+        onWalletStatusChange(mockAddress);
+      }
     } catch (error) {
       console.error('Failed to connect wallet:', error);
       toast.error('Failed to connect wallet. Please try again.');
@@ -61,6 +71,10 @@ const SuiConnector = ({ onConnect, onDisconnect }: SuiConnectorProps) => {
     
     if (onDisconnect) {
       onDisconnect();
+    }
+    
+    if (onWalletStatusChange) {
+      onWalletStatusChange(null);
     }
     
     toast.info('Wallet disconnected');

@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import DeckList from '../components/DeckList';
-import SuiConnector from '../components/SuiConnector';
 import { Button } from '@/components/ui/button';
 import { Deck } from '@/lib/types';
 import { BookOpenText } from 'lucide-react';
@@ -46,13 +45,8 @@ const Index = () => {
     fetchDecks();
   }, []);
 
-  const handleConnectWallet = (address: string) => {
-    console.log('Connected wallet address:', address);
-    setWalletConnected(true);
-  };
-
-  const handleDisconnectWallet = () => {
-    setWalletConnected(false);
+  const handleWalletStatusChange = (address: string | null) => {
+    setWalletConnected(!!address);
   };
 
   return (
@@ -66,12 +60,7 @@ const Index = () => {
             <p className="text-muted-foreground">Master concepts with spaced repetition on the Sui blockchain</p>
           </div>
           
-          <div className="mt-4 md:mt-0 flex items-center space-x-4">
-            <SuiConnector 
-              onConnect={handleConnectWallet} 
-              onDisconnect={handleDisconnectWallet} 
-            />
-            
+          <div className="mt-4 md:mt-0">
             {walletConnected && (
               <Link to="/create">
                 <Button>Create New Deck</Button>
