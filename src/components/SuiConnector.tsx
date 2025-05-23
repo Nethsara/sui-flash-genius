@@ -12,10 +12,15 @@ interface SuiConnectorProps {
 
 const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConnectorProps) => {
   const [isConnecting, setIsConnecting] = useState(false);
-  const { wallets, currentWallet } = useWallets();
+  const walletsState = useWallets();
   
-  const isConnected = !!currentWallet?.accounts[0];
-  const currentAccount = currentWallet?.accounts[0];
+  // Extract relevant properties from the wallet state
+  const currentWallet = walletsState.currentWallet;
+  const wallets = walletsState.wallets;
+  
+  // Determine if we're connected and get current account
+  const currentAccount = currentWallet?.accounts?.[0];
+  const isConnected = !!currentAccount;
 
   useEffect(() => {
     // Report wallet status to parent components when connection status changes
