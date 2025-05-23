@@ -12,6 +12,24 @@ const Index = () => {
   const [decks, setDecks] = useState<Deck[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Check if wallet is connected on component mount
+  useEffect(() => {
+    const storedAddress = localStorage.getItem('suiWalletAddress');
+    setWalletConnected(!!storedAddress);
+
+    // Listen for wallet status changes
+    const handleWalletStatusChange = (event: CustomEvent) => {
+      const { address } = event.detail;
+      setWalletConnected(!!address);
+    };
+
+    window.addEventListener('walletStatusChanged', handleWalletStatusChange as EventListener);
+
+    return () => {
+      window.removeEventListener('walletStatusChanged', handleWalletStatusChange as EventListener);
+    };
+  }, []);
+
   // Simulating data fetch
   useEffect(() => {
     const fetchDecks = async () => {
@@ -42,12 +60,12 @@ const Index = () => {
       setIsLoading(false);
     };
     
-    fetchDecks();
-  }, []);
-
-  const handleWalletStatusChange = (address: string | null) => {
-    setWalletConnected(!!address);
-  };
+    if (walletConnected) {
+      fetchDecks();
+    } else {
+      setIsLoading(false);
+    }
+  }, [walletConnected]);
 
   return (
     <div className="min-h-screen flex flex-col">
