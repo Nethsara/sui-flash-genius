@@ -8,23 +8,26 @@ import Index from "./pages/Index";
 import CreateDeck from "./pages/CreateDeck";
 import StudyDeck from "./pages/StudyDeck";
 import NotFound from "./pages/NotFound";
+import { WalletKitProvider } from "@mysten/dapp-kit";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/create" element={<CreateDeck />} />
-          <Route path="/study/:deckId" element={<StudyDeck />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <WalletKitProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/create" element={<CreateDeck />} />
+            <Route path="/study/:deckId" element={<StudyDeck />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </WalletKitProvider>
   </QueryClientProvider>
 );
 
