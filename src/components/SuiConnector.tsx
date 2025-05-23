@@ -29,10 +29,12 @@ const SuiConnector = ({ onConnect, onDisconnect, onWalletStatusChange }: SuiConn
     setIsConnecting(true);
     
     try {
-      await wallet.select();
-      await wallet.connect();
-      
-      toast.success('Wallet connected successfully!');
+      if (wallet.status !== 'connected') {
+        // The select method needs a wallet name as argument in Suiet
+        // We'll use the wallet.select method to show the wallet selector UI
+        await wallet.select();
+        toast.success('Wallet connected successfully!');
+      }
     } catch (error) {
       console.error('Failed to connect wallet:', error);
       toast.error('Failed to connect wallet. Please try again.');
