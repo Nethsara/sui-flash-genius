@@ -45,15 +45,12 @@ export function useCollections(collectionsTableId : string) {
         setLoading(true);
         try {
           const { data: entries } = await suiClient.getDynamicFields({ parentId: collectionsTableId, limit: 100 });
-console.log({entriesfromuseCollections: entries});
 
           const results = await Promise.all(
             entries.map(async (entry, i) => {
               const obj = await suiClient.getObject({ id: entries[i].objectId, options: { showContent: true } });
-              console.log({objfromuseCollections: obj});
               const fields = (obj.data?.content as SuiMoveObject).fields.name;
               const flashCards = await suiClient.getObject({ id: fields, options: { showContent: true } });
-              console.log({flashCardsfromuseCollections: flashCards});
               return {
                 id: (flashCards.data?.content as SuiMoveObject).fields.flashCards.fields.id.id,
                 name: (obj.data?.content as SuiMoveObject).fields.value,

@@ -14,9 +14,7 @@ import { useCollections } from '@/hooks/use-collections';
 
 const Index = () => {
   const accounts = useAccounts();
-  console.log(accounts);
   const currentAccount = useCurrentAccount();
-  console.log(currentAccount);
   const [walletConnected, setWalletConnected] = useState(false);
   const [decks, setDecks] = useState<Deck[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +32,8 @@ const Index = () => {
     isLoading: collectionsLoading,
     error: collectionsError,
   } = useCollections(userData?.collectionsTableId || "");
-  // Check if wallet is connected on component mount
+
+
   useEffect(() => {
     setWalletConnected(!!currentAccount);
     console.log(walletConnected);

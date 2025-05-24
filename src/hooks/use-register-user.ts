@@ -19,7 +19,6 @@ export function useRegisterUser() {
       const tx = new Transaction();
 
       const parsedArgs = mapTransactionArgs([PROFILE_MANAGER], tx);
-      console.log({parsedArgs});
 
       tx.moveCall({
         target: `${PACKAGE_ID}::profile::register_user`,
@@ -41,7 +40,6 @@ export function useRegisterUser() {
           },
         },
       );
-      console.log({result});
       // 3. Store digest
       setDigest(result?.digest || null);
     } catch (err: unknown) {

@@ -16,18 +16,15 @@ export function useCreateCollection() {
       setError(null);
 
       try {
-        // 1. Build transaction
         const tx = new Transaction();
 
         const parsedArgs = mapTransactionArgs([PROFILE_MANAGER, ...args], tx);
-        console.log({ parsedArgs });
 
         tx.moveCall({
           target: `${PACKAGE_ID}::profile::create_new_collection`,
           arguments: parsedArgs,
         });
 
-        // 2. Sign & execute
         const result = await signAndExecuteTransaction(
           {
             transaction: tx,
@@ -42,8 +39,6 @@ export function useCreateCollection() {
             },
           }
         );
-        console.log({ result });
-        // 3. Store digest
         setDigest(result?.digest || null);
       } catch (err: unknown) {
         console.error("create_new_collection failed", err);

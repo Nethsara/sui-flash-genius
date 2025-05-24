@@ -15,7 +15,6 @@ interface FlashCard {
   back: string;
 }
 export function useFlashCards(flashCardsTableId: string) {
-  console.log("flashCardsTable hook");
 
   const [flashCards, setFlashCards] = useState<FlashCard[]>([]);
   const [isLoading, setLoading] = useState(true);
@@ -23,19 +22,15 @@ export function useFlashCards(flashCardsTableId: string) {
 
   const suiClient = useSuiClient();
 
-  console.log({ flashCardsTableId });
 
   useEffect(() => {
-    console.log("useEffect");
     async function fetchCards() {
       setLoading(true);
       try {
-        console.log("fetching cards");
         const { data: entries } = await suiClient.getDynamicFields({
           parentId: flashCardsTableId,
           cursor: null,
         });
-        console.log({ entriesfromuseFlashCards: entries });
 
         const cards = await Promise.all(
           entries.map(async (entry) => {
@@ -43,7 +38,6 @@ export function useFlashCards(flashCardsTableId: string) {
               id: entry.objectId,
               options: { showContent: true },
             });
-            console.log({ objfromuseFlashCards: obj });
             const fields = (obj.data?.content as SuiMoveObject).fields;
             return {
               id: entry.objectId,
