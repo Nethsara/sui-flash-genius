@@ -139,6 +139,10 @@ const Index = () => {
         //   <DeckList decks={decks} />
         // )
         }
+
+        {walletConnected && userData && (
+          <DeckList decks={decks} />
+        )}
       </main>
       
       <footer className="bg-muted/30 py-6">

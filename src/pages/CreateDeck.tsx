@@ -20,13 +20,13 @@ const CreateDeck = () => {
   const [cards, setCards] = useState<FlashCard[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleConnectWallet = (address: string) => {
-    setWalletConnected(true);
-  };
+  // const handleConnectWallet = (address: string) => {
+  //   setWalletConnected(true);
+  // };
 
-  const handleDisconnectWallet = () => {
-    setWalletConnected(false);
-  };
+  // const handleDisconnectWallet = () => {
+  //   setWalletConnected(false);
+  // };
 
   const handleCardCreated = () => {
     // In a real app, we'd fetch the newly created card from Sui
@@ -111,34 +111,22 @@ const CreateDeck = () => {
                         placeholder="Enter deck name"
                       />
                     </div>
-                    
-                    <div className="space-y-2">
-                      <label htmlFor="description" className="text-sm font-medium">
-                        Description
-                      </label>
-                      <Textarea
-                        id="description"
-                        value={deckDescription}
-                        onChange={(e) => setDeckDescription(e.target.value)}
-                        placeholder="Enter deck description"
-                        className="min-h-[100px]"
-                      />
-                    </div>
+                
                     
                     <div className="pt-4">
                       <Button 
                         type="submit" 
-                        disabled={isSubmitting || cards.length === 0} 
+                        disabled={isSubmitting} 
                         className="w-full"
                       >
                         {isSubmitting ? 'Creating...' : 'Create Deck'}
                       </Button>
                       
-                      {cards.length === 0 && (
+                      {/* {cards.length === 0 && (
                         <p className="text-xs text-muted-foreground mt-2 text-center">
                           Add at least one card to create a deck
                         </p>
-                      )}
+                      )} */}
                     </div>
                   </CardContent>
                 </form>

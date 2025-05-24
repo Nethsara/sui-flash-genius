@@ -2,9 +2,8 @@ import { useState, useCallback } from "react";
 import { Transaction } from "@mysten/sui/transactions";
 import { mapTransactionArgs } from "@/lib/sui-helper";
 import { useSignAndExecuteTransaction } from "@mysten/dapp-kit"; 
+import { PACKAGE_ID, PROFILE_MANAGER } from "@/constants";
 
-const PACKAGE_ID = "0x27e1a6fc0dcc22a454cf206cdd1f650b8aa2dc287b8d9d551657f304d6db08cb";
-const profileManager = "0xb2849a0088c00a1d8f03e255ffec5d4affaa9623e07fac9d7fb972bc3fb0fc11";
 export function useRegisterUser() {
     const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
     const [digest, setDigest] = useState<string | null>(null);
@@ -19,7 +18,7 @@ export function useRegisterUser() {
       // 1. Build transaction
       const tx = new Transaction();
 
-      const parsedArgs = mapTransactionArgs([profileManager], tx);
+      const parsedArgs = mapTransactionArgs([PROFILE_MANAGER], tx);
       console.log({parsedArgs});
 
       tx.moveCall({
