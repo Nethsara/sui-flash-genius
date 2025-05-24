@@ -85,3 +85,7 @@
   cursor: pointer;
   @apply bg-pink-500 hover:bg-pink-600 text-white rounded-full transition-colors !important;
 }
+
+.btn-create-profile{
+  @apply bg-pink-500 hover:bg-pink-600 text-white rounded-full transition-colors !important;
+}

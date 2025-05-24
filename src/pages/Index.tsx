@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Deck } from '@/lib/types';
 import { BookOpenText } from 'lucide-react';
 import { useAccounts, useCurrentAccount } from '@mysten/dapp-kit';
+import { useUserData } from '@/hooks/use-userdata';
+import { useRegisterUser } from '@/hooks/use-register-user';
 
 const Index = () => {
   const accounts = useAccounts();
@@ -16,6 +18,7 @@ const Index = () => {
   const [walletConnected, setWalletConnected] = useState(false);
   const [decks, setDecks] = useState<Deck[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { registerUser, digest: registerDigest, loading: registerLoading, error: registerError } = useRegisterUser();
 
   // Check if wallet is connected on component mount
   useEffect(() => {
@@ -69,7 +72,24 @@ const Index = () => {
     } else {
       setIsLoading(false);
     }
-  }, [walletConnected]);
+  }, [walletConnected, registerDigest]);
+
+  const {
+    userData,
+    isLoading: userLoading,
+    error: userError,
+  } = useUserData(currentAccount?.address || "", registerDigest);
+
+  const handleCreateProfile = () => {
+   if(!currentAccount?.address){
+    return;
+   }
+
+    registerUser();
+    
+    console.log("Create Profile");
+
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -83,10 +103,13 @@ const Index = () => {
           </div>
           
           <div className="mt-4 md:mt-0">
-            {walletConnected && (
+            {walletConnected && userData && (
               <Link to="/create">
                 <Button>Create New Deck</Button>
               </Link>
+            )}
+            {walletConnected && !userData && (
+                <Button onClick={handleCreateProfile}>Create Profile</Button>
             )}
           </div>
         </div>
@@ -103,9 +126,19 @@ const Index = () => {
               Connect your wallet to create and study flashcard decks stored on the Sui blockchain
             </p>
           </div>
-        ) : (
-          <DeckList decks={decks} />
-        )}
+        ) : walletConnected && !userData && (
+          <div className="text-center py-16 border-2 border-dashed rounded-lg">
+            <BookOpenText className="mx-auto h-16 w-16 text-muted-foreground" />
+            <h2 className="mt-4 text-xl font-semibold">Let's create your profile</h2>
+            <p className="mt-2 text-muted-foreground max-w-md mx-auto">
+              <Button className="btn-create-profile" onClick={handleCreateProfile}>Create Profile</Button>
+            </p>
+          </div>
+        ) 
+        // : walletConnected && userData && (
+        //   <DeckList decks={decks} />
+        // )
+        }
       </main>
       
       <footer className="bg-muted/30 py-6">

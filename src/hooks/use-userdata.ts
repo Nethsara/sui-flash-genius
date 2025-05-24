@@ -8,13 +8,17 @@ type SuiMoveObject = {
   fields: Record<string, any>;
 };
 
-interface UserData {
+export interface UserData {
   totalCollectionsCreated: number;
   totalCollectionsOwned: number;
   collectionsTableId: string;
 }
 
-export function useUserData(walletAddress: string, userManagerId: string) {
+const userManager =
+"0xb2849a0088c00a1d8f03e255ffec5d4affaa9623e07fac9d7fb972bc3fb0fc11";
+
+export function useUserData(walletAddress: string,refreshKey?: string
+) {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -27,7 +31,7 @@ export function useUserData(walletAddress: string, userManagerId: string) {
       try {
         // 1. get manager object
         const mgr = await suiClient.getObject({
-          id: userManagerId,
+          id: userManager,
           options: { showContent: true },
         });
         const tableId = (mgr.data?.content as SuiMoveObject).fields
@@ -68,8 +72,8 @@ export function useUserData(walletAddress: string, userManagerId: string) {
         setLoading(false);
       }
     }
-    if (walletAddress && userManagerId) fetchUser();
-  }, [walletAddress, userManagerId]);
+    if (walletAddress && userManager) fetchUser();
+  }, [walletAddress, userManager, refreshKey]);
 
   return { userData, isLoading, error };
 }
