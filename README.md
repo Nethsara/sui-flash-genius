@@ -1,73 +1,96 @@
-# Welcome to your Lovable project
+````markdown
+# Sui Flashcards — Frontend
 
-## Project info
+A React application connected to a Sui Move smart contract allowing users to connect their Sui wallet, register their profile on-chain, and create, view, and study flashcard collections backed by Sui Move smart contracts.
 
-**URL**: https://lovable.dev/projects/3837e946-2301-4e24-a16d-34ec367fe5c4
+---
 
-## How can I edit this code?
+## 🚀 Live Demo
 
-There are several ways of editing your application.
+The frontend is deployed and available at:
 
-**Use Lovable**
+**https://flash.cool-kids.live**  
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/3837e946-2301-4e24-a16d-34ec367fe5c4) and start prompting.
+Visit the URL to:
+- Connect your Sui wallet (e.g. via Sui Wallet Adapter)  
+- Register yourself on the blockchain (`register_user` entry call)  
+- Create new Flashcard Collections  
+- Add and review flashcards (front/back)  
+- Quiz yourself through your card sets  
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 📦 Features
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Wallet Integration**  
+  - Connect/disconnect using Sui Wallet Adapter  
+  - Auto-detect current network and prompt switch if needed  
+- **User Registration**  
+  - Calls the `register_user` entry function in your on-chain `ProfileManager`  
+  - Displays transaction status, digest, and errors  
+- **Collection Management**  
+  - List all on-chain collections owned by the user  
+  - Create a new collection with a custom name  
+- **Flashcard Management**  
+  - Add, edit, and remove individual flashcards (front/back text)  
+  - Paginated view of cards in each collection  
+- **Study Mode**  
+  - Flip cards interactively  
+- **Responsive UI**  
+  - Mobile-friendly layout with Tailwind CSS  
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 🛠️ Getting Started
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. **Clone the repo**  
+   ```bash
+   git clone https://github.com/Nethsara/sui-flash-genius.git
+   cd sui-flashcards-frontend
+````
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2. **Install dependencies**
 
-# Step 3: Install the necessary dependencies.
-npm i
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+3. **Configure environment**
+   Create a `.env.local` in the project root with:
+
+   ```env
+   NEXT_PUBLIC_RPC_ENDPOINT=https://fullnode.testnet.sui.io
+   NEXT_PUBLIC_PACKAGE_ID=0xYOUR_PACKAGE_ID
+   NEXT_PUBLIC_PROFILE_MANAGER_OBJECT_ID=0xYOUR_PROFILE_MANAGER_ID
+   ```
+
+4. **Run locally**
+
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000) to view in your browser.
+
+5. **Build**
+
+   ```bash
+   npm run build
+   npm run start
+ 
+
+**Deployment URL**
+   [https://flash.cool-kids.live](https://flash.cool-kids.live)
+
+Any new commit to `main` will trigger a fresh build and redeploy.
+
+## 📖 License
+
+This project is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
+
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/3837e946-2301-4e24-a16d-34ec367fe5c4) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+```
