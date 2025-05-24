@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSuiClient } from "@mysten/dapp-kit";
+import { Deck } from "@/lib/types";
 
 type SuiMoveObject = {
   dataType: "moveObject";
@@ -12,6 +13,25 @@ interface Collection {
   name: string;
   totalFlashCards: number;
 }
+
+const mockDecks: Deck[] = [
+  {
+    id: '1',
+    name: 'Sui Development Basics',
+    description: 'Learn the fundamentals of developing on the Sui blockchain',
+    cardCount: 5,
+    lastStudied: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+    owner: '0x123'
+  },
+  {
+    id: '2',
+    name: 'Move Language',
+    description: 'Fundamentals of the Move programming language used in Sui',
+    cardCount: 20,
+    lastStudied: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
+    owner: '0x123'
+  }
+];
 
 export function useCollections(collectionsTableId : string) {
     const [collections, setCollections] = useState<Collection[]>([]);
@@ -52,5 +72,5 @@ console.log({entriesfromuseCollections: entries});
         fetchCollections();
     }, [collectionsTableId]);
   
-    return { collections, isLoading, error };
+    return { collections: mockDecks, isLoading, error };
   }

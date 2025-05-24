@@ -9,6 +9,8 @@ import { BookOpenText } from 'lucide-react';
 import { useAccounts, useCurrentAccount } from '@mysten/dapp-kit';
 import { useUserData } from '@/hooks/use-userdata';
 import { useRegisterUser } from '@/hooks/use-register-user';
+import { useFlashCards } from '@/hooks/use-flashcards';
+import { useCollections } from '@/hooks/use-collections';
 
 const Index = () => {
   const accounts = useAccounts();
@@ -19,7 +21,19 @@ const Index = () => {
   const [decks, setDecks] = useState<Deck[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { registerUser, digest: registerDigest, loading: registerLoading, error: registerError } = useRegisterUser();
+  const {
+    userData,
+    isLoading: userLoading,
+    error: userError,
+  } = useUserData(currentAccount?.address || "", registerDigest);
 
+  console.log({userData});
+
+  const {
+    collections,
+    isLoading: collectionsLoading,
+    error: collectionsError,
+  } = useCollections(userData?.collectionsTableId || "");
   // Check if wallet is connected on component mount
   useEffect(() => {
     setWalletConnected(!!currentAccount);
@@ -37,48 +51,23 @@ const Index = () => {
     };
   }, [currentAccount]);
 
-  // Simulating data fetch
+
   useEffect(() => {
     const fetchDecks = async () => {
-      // In a real app, we'd fetch from Sui blockchain
-      // For now, using mock data
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockDecks: Deck[] = [
-        {
-          id: '1',
-          name: 'Sui Development Basics',
-          description: 'Learn the fundamentals of developing on the Sui blockchain',
-          cardCount: 5,
-          lastStudied: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-          owner: '0x123'
-        },
-        {
-          id: '2',
-          name: 'Move Language',
-          description: 'Fundamentals of the Move programming language used in Sui',
-          cardCount: 20,
-          lastStudied: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-          owner: '0x123'
-        }
-      ];
-      
-      setDecks(mockDecks);
+      setDecks(collections);
       setIsLoading(false);
     };
     
-    if (walletConnected) {
+    if (walletConnected && userData) {
       fetchDecks();
     } else {
       setIsLoading(false);
     }
-  }, [walletConnected, registerDigest]);
+  }, [walletConnected, registerDigest, userData]);
 
-  const {
-    userData,
-    isLoading: userLoading,
-    error: userError,
-  } = useUserData(currentAccount?.address || "", registerDigest);
+
+
+  console.log({collections});
 
   const handleCreateProfile = () => {
    if(!currentAccount?.address){
@@ -135,9 +124,6 @@ const Index = () => {
             </p>
           </div>
         ) 
-        // : walletConnected && userData && (
-        //   <DeckList decks={decks} />
-        // )
         }
 
         {walletConnected && userData && (
