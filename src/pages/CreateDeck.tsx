@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import CreateCardForm from '../components/CreateCardForm';
@@ -10,10 +10,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { FlashCard } from '@/lib/types';
+import { useCurrentAccount } from '@mysten/dapp-kit';
 
 const CreateDeck = () => {
   const navigate = useNavigate();
-  const [walletConnected, setWalletConnected] = useState(false);
+  const currentAccount = useCurrentAccount();
+  const [walletConnected, setWalletConnected] = useState(!!currentAccount);
   const [deckName, setDeckName] = useState('');
   const [deckDescription, setDeckDescription] = useState('');
   const [cards, setCards] = useState<FlashCard[]>([]);
@@ -64,6 +66,10 @@ const CreateDeck = () => {
     }
   };
 
+  useEffect(() => {
+    console.log(currentAccount);
+  }, [currentAccount]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -76,10 +82,6 @@ const CreateDeck = () => {
           </div>
           
           <div className="mt-4 md:mt-0">
-            <SuiConnector 
-              onConnect={handleConnectWallet} 
-              onDisconnect={handleDisconnectWallet} 
-            />
           </div>
         </div>
         

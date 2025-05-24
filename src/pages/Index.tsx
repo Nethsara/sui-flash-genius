@@ -6,21 +6,25 @@ import DeckList from '../components/DeckList';
 import { Button } from '@/components/ui/button';
 import { Deck } from '@/lib/types';
 import { BookOpenText } from 'lucide-react';
+import { useAccounts, useCurrentAccount } from '@mysten/dapp-kit';
 
 const Index = () => {
+  const accounts = useAccounts();
+  console.log(accounts);
+  const currentAccount = useCurrentAccount();
+  console.log(currentAccount);
   const [walletConnected, setWalletConnected] = useState(false);
   const [decks, setDecks] = useState<Deck[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Check if wallet is connected on component mount
   useEffect(() => {
-    const storedAddress = localStorage.getItem('suiWalletAddress');
-    setWalletConnected(!!storedAddress);
+    setWalletConnected(!!currentAccount);
+    console.log(walletConnected);
 
     // Listen for wallet status changes
     const handleWalletStatusChange = (event: CustomEvent) => {
-      const { address } = event.detail;
-      setWalletConnected(!!address);
+      setWalletConnected(!!currentAccount);
     };
 
     window.addEventListener('walletStatusChanged', handleWalletStatusChange as EventListener);
@@ -28,7 +32,7 @@ const Index = () => {
     return () => {
       window.removeEventListener('walletStatusChanged', handleWalletStatusChange as EventListener);
     };
-  }, []);
+  }, [currentAccount]);
 
   // Simulating data fetch
   useEffect(() => {
@@ -42,7 +46,7 @@ const Index = () => {
           id: '1',
           name: 'Sui Development Basics',
           description: 'Learn the fundamentals of developing on the Sui blockchain',
-          cardCount: 15,
+          cardCount: 5,
           lastStudied: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
           owner: '0x123'
         },

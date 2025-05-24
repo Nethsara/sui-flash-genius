@@ -1,26 +1,72 @@
-
-import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import SuiConnector from './SuiConnector';
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Transaction } from "@mysten/sui/transactions";
+import SuiConnector from "./SuiConnector";
+import {
+  ConnectButton,
+  useAccounts,
+  useCurrentAccount,
+  useDisconnectWallet,
+  useSignAndExecuteTransaction,
+} from "@mysten/dapp-kit";
+import { buildMoveCall, mapTransactionArgs } from "@/lib/sui-helper";
 
 const Navbar = () => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [digest, setDigest] = useState<string | null>(null);
+
+  const { mutate: disconnect } = useDisconnectWallet();
+  const accounts = useAccounts();
+  const currentAccount = useCurrentAccount();
+  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
 
   // Check for stored wallet connection on component mount
   useEffect(() => {
-    const storedAddress = localStorage.getItem('suiWalletAddress');
-    if (storedAddress) {
-      setWalletAddress(storedAddress);
+    console.log(accounts);
+    if (accounts?.length) {
+      setWalletAddress(accounts[0].address);
+    } else {
+      setWalletAddress(null);
     }
-  }, []);
+  }, [accounts]);
 
   const handleWalletStatusChange = (address: string | null) => {
     setWalletAddress(address);
     // Dispatch a custom event that other components can listen for
-    const event = new CustomEvent('walletStatusChanged', { 
-      detail: { address } 
+    const event = new CustomEvent("walletStatusChanged", {
+      detail: { address },
     });
     window.dispatchEvent(event);
+  };
+
+  const handleSignAndExecuteTransaction = () => {
+    const tx = new Transaction();
+
+    const args = mapTransactionArgs(
+      ["0xb2849a0088c00a1d8f03e255ffec5d4affaa9623e07fac9d7fb972bc3fb0fc11"],
+      tx
+    );
+
+    const packageId =
+      "0x27e1a6fc0dcc22a454cf206cdd1f650b8aa2dc287b8d9d551657f304d6db08cb";
+
+    tx.moveCall({
+      target: `${packageId}::profile::register_user`,
+      arguments: args,
+    });
+
+    signAndExecuteTransaction(
+      {
+        transaction: tx,
+        chain: "sui:testnet",
+      },
+      {
+        onSuccess: (result) => {
+          console.log("executed transaction", result);
+          setDigest(result.digest);
+        },
+      }
+    );
   };
 
   return (
@@ -29,17 +75,34 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <img 
-                src="/lovable-uploads/d6807d4f-7852-4fa1-b05d-dbffa327fdff.png" 
-                alt="FlashSui Logo" 
-                className="h-10 w-10" 
+              <img
+                src="/lovable-uploads/d6807d4f-7852-4fa1-b05d-dbffa327fdff.png"
+                alt="SuiFlash Logo"
+                className="h-14 w-14"
               />
-              <span className="ml-2 text-xl font-bold text-white">FlashSui</span>
+              <span className="ml-2 text-xl font-bold text-white">
+                SUI FLASH
+              </span>
             </Link>
           </div>
-          
+
           <div>
-            <SuiConnector onWalletStatusChange={handleWalletStatusChange} />
+            <div className="sui-connect-button">
+              <ConnectButton />
+            </div>{" "}
+            {/* {currentAccount && (
+				<>
+					<div>
+						<button
+							onClick={handleSignAndExecuteTransaction}
+						>
+							Sign and execute transaction
+						</button>
+					</div>
+					<div>Digest: {digest}</div>
+				</>
+			)} */}
+            {/* <SuiConnector onWalletStatusChange={handleWalletStatusChange} /> */}
           </div>
         </div>
       </div>

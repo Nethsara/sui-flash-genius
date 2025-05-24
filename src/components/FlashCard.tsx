@@ -51,7 +51,7 @@ const FlashCard = ({ card, onResult }: FlashCardProps) => {
 
       {showButtons && isFlipped && onResult && (
         <div className="mt-6 flex justify-center space-x-4">
-          <Button 
+          {/* <Button 
             variant="outline" 
             className="border-red-500 text-red-500 hover:bg-red-500/10"
             onClick={(e) => {
@@ -61,7 +61,7 @@ const FlashCard = ({ card, onResult }: FlashCardProps) => {
           >
             <X className="mr-2 h-4 w-4" />
             Hard
-          </Button>
+          </Button> */}
           <Button 
             variant="outline" 
             className="border-amber-500 text-amber-500 hover:bg-amber-500/10"
@@ -70,9 +70,9 @@ const FlashCard = ({ card, onResult }: FlashCardProps) => {
               handleDifficulty('medium');
             }}
           >
-            Medium
+            Next Card
           </Button>
-          <Button 
+          {/* <Button 
             variant="outline"
             className="border-green-500 text-green-500 hover:bg-green-500/10"
             onClick={(e) => {
@@ -82,7 +82,7 @@ const FlashCard = ({ card, onResult }: FlashCardProps) => {
           >
             <Check className="mr-2 h-4 w-4" />
             Easy
-          </Button>
+          </Button> */}
         </div>
       )}
     </div>

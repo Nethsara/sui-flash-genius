@@ -80,3 +80,8 @@
 .btn-pink {
   @apply bg-pink-500 hover:bg-pink-600 text-white rounded-full transition-colors;
 }
+
+.sui-connect-button button{ 
+  cursor: pointer;
+  @apply bg-pink-500 hover:bg-pink-600 text-white rounded-full transition-colors !important;
+}
